@@ -16,9 +16,10 @@
   "scripts": {
     "dev": "concurrently --kill-others \"npm run start:css\" \"npm run start\"",
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "npm run build:css; react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "build:css": "npx tailwindcss -i src/assets/css/tailwind.css -c ./tailwind.config.js -o ./src/assets/css/main.css --m",
     "start:css": "npx tailwindcss -i src/assets/css/tailwind.css -c ./tailwind.config.js -o ./src/assets/css/main.css --watch"
   },
   "eslintConfig": {
