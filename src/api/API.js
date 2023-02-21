@@ -5,17 +5,16 @@ class API {
     async sendQuestion (value) {
         const answersData = await this.getAnswer(value)
         if (answersData.data) {
-            const token = await this.generateToken()
-            return await this.getChunks(answersData.data.chunks, token)
+            return await this.getChunks(answersData.data.chunks)
         }
     }
 
-    async getChunks(chunks = [], token) {
+    async getChunks(chunks = []) {
         const filteredChunks = chunks.filter((chunk) => chunk.confidence > 70)
         const results = []
-        if (filteredChunks.length !== 0 && token) {
+        if (filteredChunks.length !== 0) {
             for (const chunk of filteredChunks) {
-                const result = await this.getChunkByID(chunk, token)
+                const result = await this.getChunkByID(chunk)
 
                 if (result) {
                     results.push(result)
@@ -30,8 +29,8 @@ class API {
         return await axios.post(url+ '/ask', { question }, { headers })
     }
 
-    async getChunkByID(chunk, token) {
-        const { url, headers } = this.setTokenToHeaders(chunksApiConfig, token)
+    async getChunkByID(chunk) {
+        const { url, headers } = this.setTokenToHeaders(chunksApiConfig)
         const result = await axios.get(url + '/chunks/' + chunk.chunkId, { headers });
         if (result.data) {
             return { answer: result.data, confidence: chunk.confidence, id: chunk.chunkId }
@@ -44,8 +43,11 @@ class API {
         return results.data?.token ?? undefined
     }
 
-    setTokenToHeaders(config, token) {
-        config.headers.get.Authorization = token
+    async setTokenToHeaders(config) {
+        const token = await this.generateToken()
+        if (token) {
+            config.headers.get.Authorization = token
+        }
         return config
     }
 }
