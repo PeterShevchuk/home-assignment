@@ -30,23 +30,18 @@ class API {
     }
 
     async getChunkByID(chunk) {
-        const { url, headers } = this.setTokenToHeaders(chunksApiConfig)
-        const result = await axios.get(url + '/chunks/' + chunk.chunkId, { headers });
-        if (result.data) {
-            return { answer: result.data, confidence: chunk.confidence, id: chunk.chunkId }
+        const { url, headers } = await this.getChunksApiConfig()
+        const { data } = await axios.get(url + '/chunks/' + chunk.chunkId, { headers });
+        if (data) {
+            return { answer: data, confidence: chunk.confidence, id: chunk.chunkId }
         }
     }
 
-    async generateToken () {
-        const { url, headers } = chunksApiConfig
-        const results = await axios.post(url + '/auth/generate-token', {}, { headers })
-        return results.data?.token ?? undefined
-    }
-
-    async setTokenToHeaders(config) {
-        const token = await this.generateToken()
-        if (token) {
-            config.headers.get.Authorization = token
+    async getChunksApiConfig () {
+        const config = chunksApiConfig
+        const { data } = await axios.post(config.url + '/auth/generate-token', {}, { headers: config.headers })
+        if (data?.token) {
+            config.headers.get.Authorization = data.token
         }
         return config
     }
