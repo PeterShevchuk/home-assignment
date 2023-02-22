@@ -1,11 +1,10 @@
 import {ExamplesBlock} from "./index";
-import {WebAppApiContext} from "../contexts/WebAppApiContext";
-import {useContext, useState} from "react";
+import {useWebAppApi} from "../contexts/WebAppApiContext";
+import {useState} from "react";
 import {ReactComponent as SearchIcon} from "../assets/svg/search.svg";
 
-
 export const QuestionForm = () => {
-    const { loading, getAnswers, clearAll } = useContext(WebAppApiContext);
+    const { loading, getAnswers, clearAll } = useWebAppApi()
 
     const [question, setQuestion] = useState('');
 

@@ -1,9 +1,8 @@
-import {WebAppApiContext} from "../contexts/WebAppApiContext";
-import {useContext} from "react";
+import {useWebAppApi} from "../contexts/WebAppApiContext";
 import {NoAnswerBlock, ErrorBlock} from "./index";
 
 export const AnswersBlock = () => {
-    const { clearAll, results } = useContext(WebAppApiContext);
+    const { clearAll, results } = useWebAppApi()
 
     if (results.error) {
         return <ErrorBlock error={results.error} clearAll={clearAll} />
